@@ -5,12 +5,12 @@ import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 
 st.set_page_config(layout='wide')
-st.title("Math Problem Solver using Streamlit and LLM (Google Gemini) ✨")
+st.title("Math Problem Solver using Streamlit and LLM (Google Gemini)")
 
 st.write("""
 This project allows you to draw a math equation on a digital whiteboard and send it to the LLM Gemini to receive a solution.
 
-🚀 How to use this app:
+ How to use this app:
 1. Use your mouse or touchpad to draw the math equation on the whiteboard below.
 2. Click the 'Solve' button to send the input to Gemini.
 3. Click 'Clear Canvas' to erase everything and start over.
@@ -30,7 +30,8 @@ with col1:
     stroke_color = st.sidebar.color_picker("Stroke color hex: ")
     bg_color = st.sidebar.color_picker("Background color hex: ", "#eee")
     
-
+    
+    
     # Create a canvas component
     canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
@@ -42,7 +43,9 @@ with col1:
         drawing_mode="freedraw",
         key="canvas",
     )
-
+    # Text input for problem description
+    problem_text = st.text_area("Describe your problem (optional):")
+    
     # Buttons for solving and clearing
     col1_1, col1_2 = st.columns(2)
     with col1_1:
@@ -51,7 +54,14 @@ with col1:
                 # Convert the image data to a format Gemini can use
                 img = Image.fromarray(canvas_result.image_data.astype('uint8'), 'RGBA')
                 img = img.convert('RGB')
-                response = model.generate_content(["Solve this math problem", img])
+                
+                # Include the problem description in the request
+                if problem_text:
+                    prompt = f"Solve this math problem: {problem_text}"
+                else:
+                    prompt = "Solve this math problem"
+                
+                response = model.generate_content([prompt, img])
                 st.session_state['solution'] = response.text
 
 # Display the solution
