@@ -4,6 +4,10 @@ from PIL import Image
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 
+# Configure Gemini AI
+genai.configure(api_key="AIzaSyCoehrVswJRws-SnLtkRwrXhiUn-6-T1KI")
+model = genai.GenerativeModel('gemini-1.5-pro')
+
 st.set_page_config(layout='wide')
 st.title("Math Problem Solver using Streamlit and LLM (Google Gemini)")
 
@@ -15,10 +19,6 @@ This project allows you to draw a math equation on a digital whiteboard and send
 2. Click the 'Solve' button to send the input to Gemini.
 3. Click 'Clear Canvas' to erase everything and start over.
 """)
-
-# Configure Gemini AI
-genai.configure(api_key="AIzaSyCoehrVswJRws-SnLtkRwrXhiUn-6-T1KI")
-model = genai.GenerativeModel('gemini-1.5-pro')
 
 # Create two columns
 col1, col2 = st.columns([2, 1])
@@ -49,8 +49,7 @@ with col1:
     # Buttons for solving and clearing
     col1_1, col1_2 = st.columns(2)
     with col1_1:
-        if st.button('Solve'):
-            if canvas_result.image_data is not None:
+        if st.button('Solve') and canvas_result.image_data is not None:
                 # Convert the image data to a format Gemini can use
                 img = Image.fromarray(canvas_result.image_data.astype('uint8'), 'RGBA')
                 img = img.convert('RGB')
