@@ -2,8 +2,8 @@ import os
 import xml.etree.ElementTree as ET
 
 # Directory containing the InkML files
-input_directory = 'mathwriting-2024-excerpt/train/'
-output_directory = 'my-labels/'
+input_directory = './mathwriting-2024/test'
+output_directory = './tesstrain/data/labels/test-labels'
 
 # Ensure the output directory exists
 os.makedirs(output_directory, exist_ok=True)
@@ -25,7 +25,7 @@ def write_label_to_file(file_path):
         file_name = os.path.splitext(os.path.basename(file_path))[0]
 
         # Define the output file path
-        output_file_path = os.path.join(output_directory, f'{file_name}.txt')
+        output_file_path = os.path.join(output_directory, f'{file_name}.gt.txt')
 
         # Extract the label's text
         if label_element is not None:
