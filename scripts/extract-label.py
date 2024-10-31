@@ -2,7 +2,8 @@ import os
 import xml.etree.ElementTree as ET
 
 # Directory containing the InkML files
-input_directory = './mathwriting-2024/test'
+# input_directory = './mathwriting-2024/test' # full dataset
+input_directory = './mathwriting-2024-excerpt/test'
 output_directory = './tesstrain/data/labels/test-labels'
 
 # Ensure the output directory exists
