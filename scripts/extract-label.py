@@ -15,7 +15,7 @@ def write_label_to_file(file_path):
         tree = ET.parse(file_path)
         root = tree.getroot()
 
-        # Define the namespace for the InkML file (needed because the XML elements have a namespace)
+        # Define the namespace for the InkML file 
         namespace = {'inkml': 'http://www.w3.org/2003/InkML'}
 
         # Find the annotation element with type 'label'
