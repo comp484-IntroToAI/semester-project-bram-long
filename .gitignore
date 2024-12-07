@@ -1,9 +1,0 @@
-.venv
-math-image-dataset
-MATH.*
-MATH
-mathwriting-2024
-mathwriting-2024-excerpt/*
-my-labels/*
-.DS_Store
-.env
