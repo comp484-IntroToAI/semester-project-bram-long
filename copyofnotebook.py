@@ -62,6 +62,25 @@ def create_sliding_window(X, y, window_size=3):
         X_windowed.append(X_window)
         y_windowed.append(y_window)
 
+def Train_LSTM(X_trainn,y_trainn,units,batch_size,epochs):
+    #==Define model architecture
+    model = Sequential()
+    #===== Add LSTM layers
+    model.add(LSTM(units = units, return_sequences=True,activation='relu',
+                   input_shape=(X_trainn.shape[1], X_trainn.shape[2])))
+    #===== Hidden layer
+    model.add(LSTM(units = units))
+    #=== output layer
+    model.add(Dense(units = 1))
+    #==== Compiling the model
+    model.compile(optimizer='adam', loss='mape') 
+    #====== Fit Model
+    early_stop = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 10)
+    history = model.fit(X_trainn, y_trainn, epochs = epochs, validation_split = 0.2,
+                        batch_size = batch_size, shuffle = False, callbacks = [early_stop],verbose=0)
+    
+    modelN='LSTM'
+    return(history,modelN,model)
 
 def Train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
     model = Sequential()
@@ -111,6 +130,10 @@ print(X_windowed.shape, y_windowed.shape, X_test_windowed.shape, y_test_windowed
 units = 64  
 batch_size = 64
 epochs = 10
+
+
+
+
 
 history, biLSTM_model_name, trained_bilstm_model = Train_BiLSTM(X_windowed, y_windowed, units, batch_size, epochs, verbose=2, learning_rate = .0007)
 
