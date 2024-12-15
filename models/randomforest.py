@@ -28,7 +28,7 @@ def find_important_features(df, feature_columns, target):
 
     plt.barh(feature_importance_df['Feature'], feature_importance_df['Importance'])
     plt.xlabel('Feature Importance')
-    plt.title('Feature Importance for Predicting Contract Value')
+    plt.title('Feature Importance for Predicting Maximum Temperature')
     plt.gca().invert_yaxis()  
     plt.show()
 

@@ -37,7 +37,7 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
     y_test_windowed = []
     for i in range(len(X_scaled_test) - window_size + 1):
         X_window = X_scaled_test[i:i+window_size]
-        y_window = y_scaled_test[i+window_size-1] #drops first two observations
+        y_window = y_scaled_test[i+window_size-1] # drops first observations because doesn't have full window (preventing data leakage)
         X_test_windowed.append(X_window)
         y_test_windowed.append(y_window)
     
@@ -115,8 +115,11 @@ def plot_loss(history, name):
     plt.show()
 
 
-def plot_predictions(X_test_windowed, y_test_windowed, target_scaler):
-    y_pred = trained_lstm_model.predict(X_test_windowed)
+def get_predictions(model, X_test_windowed):
+    y_pred = model.predict(X_test_windowed)
+    return y_pred
+
+def plot_predictions(model_name, X_test_windowed, y_test_windowed, y_pred, target_scaler):
 
     # Inverse transform predictions and actual values
     y_pred_original = target_scaler.inverse_transform(y_pred)
@@ -131,7 +134,7 @@ def plot_predictions(X_test_windowed, y_test_windowed, target_scaler):
     plt.plot([y_test_original.min(), y_test_original.max()], 
             [y_test_original.min(), y_test_original.max()], 
             'r--', lw=2)
-    plt.title('Predictions vs Actual Values')
+    plt.title(f'{model_name} Predictions vs Actual Values')
     plt.xlabel('Actual Values')
     plt.ylabel('Predicted Values')
 
@@ -139,7 +142,7 @@ def plot_predictions(X_test_windowed, y_test_windowed, target_scaler):
     errors = y_pred_original - y_test_original
     plt.subplot(1, 2, 2)
     plt.hist(errors, bins=30, edgecolor='black')
-    plt.title('Prediction Errors Distribution')
+    plt.title(f'{model_name} Prediction Errors Distribution')
     plt.xlabel('Prediction Error')
     plt.ylabel('Frequency')
 
@@ -151,7 +154,7 @@ def plot_predictions(X_test_windowed, y_test_windowed, target_scaler):
     plt.figure(figsize=(12, 6))
     plt.plot(y_pred_original , label='Actual', color='blue')
     plt.plot(y_pred_original, label='Predicted', color='red', linestyle='--')
-    plt.title('Actual vs Predicted Values')
+    plt.title(f'{model_name} Actual vs Predicted Values')
     plt.xlabel('Time Steps')
     plt.ylabel('Values')
     plt.legend()
