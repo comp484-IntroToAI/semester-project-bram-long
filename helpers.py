@@ -26,17 +26,14 @@ def check_stationarity(timeseries):
 
 
 '''Calculates the performance metrics for the '''
-def calculate_metrics(y_all, y_pred, split): 
-    split_index = int(split * len(y_all)) 
-    y_actual_split = y_all[split_index:]
-    y_pred_split = y_pred[split_index:]
-
-    mse = mean_squared_error(y_actual_split, y_pred_split)
+def calculate_metrics(y_test, y_pred): 
+    mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
-    mae = mean_absolute_error(y_actual_split, y_pred_split)
+    mae = mean_absolute_error(y_test, y_pred)
     
     print(f"Mean Squared Error (MSE): {mse}")
-print(f'Mean Absolute Error (MAE): {mae}')
-print(f"Root Mean Squared Error (RMSE): {rmse}")
+    print(f'Mean Absolute Error (MAE): {mae}')
+    print(f"Root Mean Squared Error (RMSE): {rmse}")
 
     return mse, rmse, mae
+

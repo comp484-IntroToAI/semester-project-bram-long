@@ -6,6 +6,36 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 
 
+def find_important_features(df, feature_columns, target):
+    df_copy = df.copy()
+
+
+    X = df_copy[feature_columns]
+    y = df_copy[target]
+
+    model = RandomForestRegressor(n_estimators=200, random_state=42)
+
+    model.fit(X, y)
+
+    importances = model.feature_importances_
+
+    feature_importance_df = pd.DataFrame({
+        'Feature': feature_columns,
+        'Importance': importances
+    })
+
+    feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+
+    plt.barh(feature_importance_df['Feature'], feature_importance_df['Importance'])
+    plt.xlabel('Feature Importance')
+    plt.title('Feature Importance for Predicting Contract Value')
+    plt.gca().invert_yaxis()  
+    plt.show()
+
+    return feature_importance_df
+
+
+
 '''Finds the best random forest model utilizing a grid search algorithm.'''
 def find_best_random_forest_model(X_train, y_train):
     model = RandomForestRegressor(random_state=42)
