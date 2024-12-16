@@ -6,7 +6,25 @@ from tensorflow.keras.layers import Dense,Dropout, Embedding, LSTM, Bidirectiona
 
 
 def scale_inputs(X_train, X_test):
-    # Initialize the scaler
+    """
+    Scales the input features of the LSTM model.
+
+    Parameters
+    ----------
+    X_train : pandas DataFrame
+        The training data
+    X_test : pandas DataFrame
+        The test data
+
+    Returns
+    -------
+    X_train_scaled : numpy array
+        The scaled training data
+    X_test_scaled : numpy array
+        The scaled test data
+    scaler : StandardScaler
+        The scaler object used to scale the data
+    """
     scaler_X_lstm = StandardScaler()
     # Fit and transform the training data, then transform the test data
     X_train_scaled = scaler_X_lstm.fit_transform(X_train)
@@ -15,6 +33,38 @@ def scale_inputs(X_train, X_test):
     return X_train_scaled, X_test_scaled, scaler_X_lstm
 
 def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
+    """
+    Prepares the data for the LSTM model by scaling the features and targets
+    and creating windowed sequences of the data.
+
+    Parameters
+    ----------
+    X_train : pandas DataFrame
+        The training data
+    y_train : pandas Series
+        The training labels
+    X_test : pandas DataFrame
+        The test data
+    y_test : pandas Series
+        The test labels
+    window_size : int
+        The size of the window for creating the sequences
+
+    Returns
+    -------
+    X_windowed : numpy array
+        The windowed sequences of the training data
+    y_windowed : numpy array
+        The windowed sequences of the training labels
+    X_test_windowed : numpy array
+        The windowed sequences of the test data
+    y_test_windowed : numpy array
+        The windowed sequences of the test labels
+    feature_scaler : StandardScaler
+        The scaler object used to scale the features
+    target_scaler : StandardScaler
+        The scaler object used to scale the targets
+    """
     feature_scaler = StandardScaler()
     X_np_train = X_train.values
     X_scaled_train = feature_scaler.fit_transform(X_np_train)
@@ -52,6 +102,25 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
     
     return X_windowed, y_windowed, X_test_windowed, y_test_windowed, feature_scaler, target_scaler
 def create_sliding_window(X, y, window_size=3):
+    """
+    Creates sliding window sequences for the input data.
+
+    Parameters
+    ----------
+    X : numpy array
+        The input features array.
+    y : numpy array
+        The target values array.
+    window_size : int, optional
+        The size of the sliding window (default is 3).
+
+    Returns
+    -------
+    X_windowed : list
+        A list of windowed feature sequences.
+    y_windowed : list
+        A list of target values corresponding to each windowed sequence.
+    """
     X_windowed = []
     y_windowed = []
     
@@ -64,6 +133,31 @@ def create_sliding_window(X, y, window_size=3):
 
 def Train_LSTM(X_trainn,y_trainn,units,batch_size,epochs):
     #==Define model architecture
+    """
+    Trains a simple LSTM model on the given data.
+
+    Parameters
+    ----------
+    X_trainn : numpy array
+        The input features array.
+    y_trainn : numpy array
+        The target values array.
+    units : int
+        The number of units in the LSTM layers.
+    batch_size : int
+        The batch size for training.
+    epochs : int
+        The number of epochs for training.
+
+    Returns
+    -------
+    history : History object
+        The history of the training process.
+    modelN : str
+        The name of the model.
+    model : Sequential model
+        The trained model.
+    """
     model = Sequential()
     #===== Add LSTM layers
     model.add(LSTM(units = units, return_sequences=True,activation='relu',
@@ -83,6 +177,35 @@ def Train_LSTM(X_trainn,y_trainn,units,batch_size,epochs):
     return(history,modelN,model)
 
 def Train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
+    """
+    Train a Bidirectional LSTM model.
+
+    Parameters
+    ----------
+    X_train : numpy array
+        The input features array.
+    y_train : numpy array
+        The target values array.
+    units : int
+        The number of units in the LSTM layers.
+    batch_size : int
+        The batch size for training.
+    epochs : int
+        The number of epochs for training.
+    verbose : int
+        The verbosity of the model during training. Defaults to 2.
+    learning_rate : float
+        The learning rate of the optimizer. Defaults to 0.001.
+
+    Returns
+    -------
+    history : History object
+        The history of the training process.
+    modelN : str
+        The name of the model.
+    model : Sequential model
+        The trained model.
+    """
     model = Sequential()
     model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh', 
                                   input_shape=(X_train.shape[1], X_train.shape[2]))))
