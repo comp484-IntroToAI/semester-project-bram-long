@@ -79,16 +79,15 @@ def train_LSTM(X_train, y_train,units,batch_size,epochs, verbose=2, learning_rat
 
 
 def train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
+    # model = Sequential()
+    # model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh', 
+    #                               input_shape=(X_train.shape[1], X_train.shape[2]))))
+    # model.add(Bidirectional(LSTM(20, return_sequences=True, activation='tanh')))
+    # model.add(Bidirectional(LSTM(10, return_sequences=False, activation='tanh')))
     model = Sequential()
-    model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh', 
-                                  input_shape=(X_train.shape[1], X_train.shape[2]))))
-    model.add(Bidirectional(LSTM(20, return_sequences=True, activation='tanh')))
-    model.add(Bidirectional(LSTM(10, return_sequences=False, activation='tanh')))
-    
-    model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.2))
+    model.add(Bidirectional(LSTM(20, return_sequences=False, activation='tanh', input_shape=(X_train.shape[1], X_train.shape[2]))))
     model.add(Dense(32, activation='relu'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.3))
     model.add(Dense(1))
 
     optimizer = Adam(learning_rate=learning_rate)
@@ -98,7 +97,7 @@ def train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_ra
     #====== Fit Model
     early_stop = tf.keras.callbacks.EarlyStopping(
         monitor='val_loss', 
-        patience=10, 
+        patience=5, 
         restore_best_weights=True
     )
     history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.2,
