@@ -51,18 +51,41 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
 
 def train_LSTM(X_train, y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
     #==Define model architecture
+    # model = Sequential()
+    # #===== Add LSTM layers
+    # model.add(LSTM(units = units, return_sequences=True,activation='relu',
+    #                input_shape=(X_train.shape[1], X_train.shape[2])))
+    # #===== Hidden layer
+    # model.add(LSTM(units = units))
+    # #=== output layer
+    # model.add(Dense(64, activation='relu'))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(32, activation='relu'))
+    # model.add(Dense(32, activation='relu'))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(1))
+
     model = Sequential()
-    #===== Add LSTM layers
-    model.add(LSTM(units = units, return_sequences=True,activation='relu',
+    
+    # First LSTM layer with return_sequences=True
+    model.add(LSTM(units=units, 
+                   return_sequences=True,
+                   activation='relu',
                    input_shape=(X_train.shape[1], X_train.shape[2])))
-    #===== Hidden layer
-    model.add(LSTM(units = units))
-    #=== output layer
+    
+    # Second LSTM layer
+    model.add(LSTM(units=units))
+    
+    # Output dense layers with dropout
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.2))
+    
     model.add(Dense(32, activation='relu'))
+    
     model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.2))
+    
+    # Final output layer
     model.add(Dense(1))
     #==== Compiling the model
     model.compile(optimizer='adam', loss='mean_squared_error') 

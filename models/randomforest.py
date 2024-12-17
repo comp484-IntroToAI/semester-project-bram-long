@@ -5,11 +5,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 
-
+# TODO
 def find_important_features(df, feature_columns, target):
+    '''
+    '''
     df_copy = df.copy()
-
-
     X = df_copy[feature_columns]
     y = df_copy[target]
 
@@ -36,8 +36,13 @@ def find_important_features(df, feature_columns, target):
 
 
 
-'''Finds the best random forest model utilizing a grid search algorithm.'''
 def find_best_random_forest_model(X_train, y_train):
+    '''Finds the best random forest model utilizing
+     a grid search algorithm.
+    X_train: dataframe of the input values for the train set. 
+    y_train: dataframe of the target value for the train set.
+     '''
+
     model = RandomForestRegressor(random_state=42)
     param_grid = {
     'n_estimators': [100],  
@@ -57,7 +62,12 @@ def find_best_random_forest_model(X_train, y_train):
     print("Best cross-validation score: ", grid_search.best_score_)
     return best_model
 
-'''Gets the predictions of a model for the test set y.'''
+
 def get_rf_predictions(model, X_test):
+    '''Gets the predictions of a random forest 
+    model for the test set.
+    model: random forest model.
+    X_test: dataframe of inputs of the test set.
+    '''
     predictions = model.predict(X_test)
     return predictions
