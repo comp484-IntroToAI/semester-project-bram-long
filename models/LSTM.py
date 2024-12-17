@@ -47,85 +47,59 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
     return X_windowed, y_windowed, X_test_windowed, y_test_windowed, feature_scaler, target_scaler
 
 
-
-
 def train_LSTM(X_train, y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
-    #==Define model architecture
-    # model = Sequential()
-    # #===== Add LSTM layers
-    # model.add(LSTM(units = units, return_sequences=True,activation='relu',
-    #                input_shape=(X_train.shape[1], X_train.shape[2])))
-    # #===== Hidden layer
-    # model.add(LSTM(units = units))
-    # #=== output layer
-    # model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(32, activation='relu'))
-    # model.add(Dense(32, activation='relu'))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(1))
-
     model = Sequential()
-    
-    # First LSTM layer with return_sequences=True
-    model.add(LSTM(units=units, 
-                   return_sequences=True,
-                   activation='relu',
-                   input_shape=(X_train.shape[1], X_train.shape[2])))
-    
-    # Second LSTM layer
-    model.add(LSTM(units=units))
-    
-    # Output dense layers with dropout
+    #===== Add LSTM layers
+    model.add(LSTM(units = units, return_sequences=True,activation='relu',
+                    input_shape=(X_train.shape[1], X_train.shape[2])))
+    #===== Hidden layer
+    model.add(LSTM(units = units))
+    #=== output layer
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.2))
-    
     model.add(Dense(32, activation='relu'))
-    
     model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.2))
-    
-    # Final output layer
     model.add(Dense(1))
     #==== Compiling the model
-    model.compile(optimizer='adam', loss='mean_squared_error') 
+    model.compile(optimizer='adam', loss='mean_squared_error')
     #====== Fit Model
     early_stop = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 10)
-    history = model.fit(X_train, y_train, epochs = epochs, 
-                        validation_split = 0.2,
-                        batch_size = batch_size, shuffle = False,
-                        callbacks = [early_stop],verbose=0
-                        )   
-    
+    history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.2,
+                        batch_size = batch_size, shuffle = False, callbacks = [early_stop],verbose=0)
+
     modelN='LSTM'
     return(history,modelN,model)
 
 
 def train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
-    # model = Sequential()
-    # model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh', 
-    #                               input_shape=(X_train.shape[1], X_train.shape[2]))))
-    # model.add(Bidirectional(LSTM(20, return_sequences=True, activation='tanh')))
-    # model.add(Bidirectional(LSTM(10, return_sequences=False, activation='tanh')))
     model = Sequential()
-    model.add(Bidirectional(LSTM(20, return_sequences=False, activation='tanh', input_shape=(X_train.shape[1], X_train.shape[2]))))
+    model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh',
+                                    input_shape=(X_train.shape[1], X_train.shape[2]))))
+    model.add(Bidirectional(LSTM(20, return_sequences=True, activation='tanh')))
+    model.add(Bidirectional(LSTM(10, return_sequences=False, activation='tanh')))
+
+    model.add(Dense(64, activation='relu'))
+    model.add(Dropout(0.2))
     model.add(Dense(32, activation='relu'))
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.2))
     model.add(Dense(1))
+
 
     optimizer = Adam(learning_rate=learning_rate)
     model.compile(optimizer=optimizer, loss='mean_squared_error', metrics=['accuracy'])
 
-    # model.compile(optimizer='adam', loss='mape',  metrics=['MeanSquaredError', 'MeanAbsoluteError','RootMeanSquaredError'],) 
+
+    # model.compile(optimizer='adam', loss='mape',  metrics=['MeanSquaredError', 'MeanAbsoluteError','RootMeanSquaredError'],)
     #====== Fit Model
     early_stop = tf.keras.callbacks.EarlyStopping(
-        monitor='val_loss', 
-        patience=5, 
+        monitor='val_loss',
+        patience=10,
         restore_best_weights=True
     )
     history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.2,
                         batch_size = batch_size,  shuffle = False, callbacks = [early_stop],verbose=verbose)
-    
+
     modelN='BiLSTM'
     return(history,modelN,model)
 
@@ -175,7 +149,7 @@ def plot_predictions(model_name, X_test_windowed, y_test_windowed, y_pred, targe
 
     plt.figure(figsize=(12, 6))
     plt.plot(y_pred_original , label='Actual', color='blue')
-    plt.plot(y_pred_original, label='Predicted', color='red', linestyle='--')
+    plt.plot(y_test_original, label='Predicted', color='red', linestyle='--')
     plt.title(f'{model_name} Actual vs Predicted Values')
     plt.xlabel('Time Steps')
     plt.ylabel('Values')
