@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
+import helpers as hp
 
 # TODO
 def find_important_features(df, feature_columns, target):
@@ -45,13 +46,14 @@ def find_best_random_forest_model(X_train, y_train):
 
     model = RandomForestRegressor(random_state=42)
     param_grid = {
-    'n_estimators': [100],  
+    'n_estimators': [100, 300, 500],  
     'max_depth': [10, 20],     
     'min_samples_split': [2, 5],          
     'min_samples_leaf': [1, 2],           
     'max_features': [None, 'sqrt', 'log2'],  
     'bootstrap': [True]
     }
+
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, verbose=0)
 
     grid_search.fit(X_train, y_train)
@@ -71,3 +73,30 @@ def get_rf_predictions(model, X_test):
     '''
     predictions = model.predict(X_test)
     return predictions
+
+def plot_predictions(y_pred, y_original):
+    # Plot predictions vs actual
+    plt.figure(figsize=(12, 6))
+
+    # Scatter plot of predictions vs actual
+    plt.subplot(1, 2, 1)
+    plt.scatter(y_original, y_pred, alpha=0.5)
+    plt.plot([y_original.min(), y_original.max()], 
+            [y_original.min(), y_original.max()], 
+            'r--', lw=2)
+    plt.title('Random Forest Predictions vs Actual Temperature (F)')
+    plt.xlabel('Actual Temperature (F)')
+    plt.ylabel('Predicted Temperature (F)')
+
+    # # Prediction errors histogram
+    errors = y_pred - y_original
+    plt.subplot(1, 2, 2)
+    plt.hist(errors, bins=30, edgecolor='black')
+    plt.title('Random Forest Prediction Errors Distribution')
+    plt.xlabel('Prediction Error')
+    plt.ylabel('Frequency')
+
+    plt.tight_layout()
+    plt.show()
+
+    hp.calculate_metrics(y_original, y_pred)

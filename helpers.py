@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-
+from sklearn.model_selection import train_test_split
 
 
 def create_train_test(X, y, split):
@@ -11,9 +11,8 @@ def create_train_test(X, y, split):
     X: inputs of the model
     y: ouputs of the model
     split: percent of data that is allocated for training the model.'''
-    split_index = int(len(X) * split) 
-    X_train, y_train = X[:split_index], y[:split_index]
-    X_test, y_test = X[split_index:], y[split_index:]
+    X_train, X_test = train_test_split(X, train_size= split, random_state=42)
+    y_train, y_test = train_test_split(y, train_size= split, random_state=42)
     return X_train, y_train, X_test, y_test 
 
 def check_stationarity(df):

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense,Dropout, Embedding, LSTM, Bidirectional
 import helpers as hp
@@ -47,7 +48,7 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
     return X_windowed, y_windowed, X_test_windowed, y_test_windowed, feature_scaler, target_scaler
 
 
-def train_LSTM(X_train, y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
+def train_LSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, verbose=2, learning_rate=0.001):
     model = Sequential()
     #===== Add LSTM layers
     model.add(LSTM(units = units, return_sequences=True,activation='relu',
@@ -61,18 +62,24 @@ def train_LSTM(X_train, y_train,units,batch_size,epochs, verbose=2, learning_rat
     model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.2))
     model.add(Dense(1))
+
+
     #==== Compiling the model
     model.compile(optimizer='adam', loss='mean_squared_error')
     #====== Fit Model
-    early_stop = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss',patience = 10)
+    early_stop = tf.keras.callbacks.EarlyStopping(
+        monitor = 'val_loss',
+        patience = 10)
+
+    checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.2,
-                        batch_size = batch_size, shuffle = False, callbacks = [early_stop],verbose=0)
+                        batch_size = batch_size, shuffle = False, callbacks = [early_stop, checkpoint],verbose=verbose)
 
     modelN='LSTM'
     return(history,modelN,model)
 
 
-def train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_rate=0.001):
+def train_BiLSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, verbose=2, learning_rate=0.001):
     model = Sequential()
     model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh',
                                     input_shape=(X_train.shape[1], X_train.shape[2]))))
@@ -97,8 +104,10 @@ def train_BiLSTM(X_train,y_train,units,batch_size,epochs, verbose=2, learning_ra
         patience=10,
         restore_best_weights=True
     )
+    checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+
     history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.2,
-                        batch_size = batch_size,  shuffle = False, callbacks = [early_stop],verbose=verbose)
+                        batch_size = batch_size,  shuffle = False, callbacks = [early_stop, checkpoint], verbose=verbose)
 
     modelN='BiLSTM'
     return(history,modelN,model)
@@ -130,9 +139,9 @@ def plot_predictions(model_name, X_test_windowed, y_test_windowed, y_pred, targe
     plt.plot([y_test_original.min(), y_test_original.max()], 
             [y_test_original.min(), y_test_original.max()], 
             'r--', lw=2)
-    plt.title(f'{model_name} Predictions vs Actual Values')
-    plt.xlabel('Actual Values')
-    plt.ylabel('Predicted Values')
+    plt.title(f'{model_name} Predictions vs Actual Temperature (F)')
+    plt.xlabel('Actual Temperature (F)')
+    plt.ylabel('Predicted Temperature (F)')
 
     # # Prediction errors histogram
     errors = y_pred_original - y_test_original
@@ -146,12 +155,3 @@ def plot_predictions(model_name, X_test_windowed, y_test_windowed, y_pred, targe
     plt.show()
 
     hp.calculate_metrics(y_test_original, y_pred_original)
-
-    plt.figure(figsize=(12, 6))
-    plt.plot(y_pred_original , label='Actual', color='blue')
-    plt.plot(y_test_original, label='Predicted', color='red', linestyle='--')
-    plt.title(f'{model_name} Actual vs Predicted Values')
-    plt.xlabel('Time Steps')
-    plt.ylabel('Values')
-    plt.legend()
-    plt.show()
