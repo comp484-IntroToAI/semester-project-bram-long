@@ -1,4 +1,4 @@
-# Weather Temperature Prediction for Weather Trading
+# Weather Temperature Prediction
 
 ## Project Overview
 This project leverages Artificial Intelligence and Machine Learning techniques to predict the maximum weather temperature for a given day in Miami, Florida. The goal is to aid in weather forecasting which has positive impacts on human livelihood, the economy, and businesses.
