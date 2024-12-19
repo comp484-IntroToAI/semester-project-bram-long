@@ -1,3 +1,9 @@
+New update from Long:
+Go to ipynb, select kernel and then select `arima_dl`.
+Conda main env right now is arima_dl
+
+
+Old:
 deactivate
 
 conda deactivate
@@ -6,3 +12,4 @@ source .venv/bin/activate
 conda activate pytorch_env
 jupyter-notebook
 conda env list 
+
