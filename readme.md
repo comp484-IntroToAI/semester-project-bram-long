@@ -14,6 +14,9 @@ We employ three robust models:
 2. **LSTM (Long Short-Term Memory)** - A type of recurrent neural network which captures short-term and long-term patterns in time-series data.
 3. **BiLSTM** - A type of LSTM that reads through the data forwards and backwards enabling it to more comprehensively understand the data.
 
+## Installation
+
+
 ## Results
 We then utilize an ensemble approach with all three models to combine our predictions with the OpenMeteo forecast and find improved forecasting results. We find that the random forest and LSTM trained on all four predictions outperforms the Open Meteo forecast. These results hold when altering the train-test size showing robust results.
 
