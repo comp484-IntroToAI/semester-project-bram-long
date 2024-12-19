@@ -141,10 +141,10 @@ def train_BiLSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, v
 
 def plot_loss(history, name):
     """
-    This function takes a history object returned by the fit method of a 
-    tf.keras.Model and a name string. It plots the training and validation loss
-    curves of the model. The curves are labeled and the plot is given a title
-    based on the name string. The plot is then shown.
+    This function takes a history object returned by the tensorflow model.
+    It plots and labels the training and validation loss curves of the model. 
+    history: history of training and validaiton loss from tensorflow model
+    name: Name of model
     """
     plt.plot(history.history['loss'], label='Training Loss')
     plt.plot(history.history['val_loss'], label='Validation Loss')
