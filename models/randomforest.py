@@ -12,6 +12,10 @@ def find_important_features(df, feature_columns, target):
      Identify the most important features in a dataset (df) for predicting a target variable (target). 
      Returns a dataframe (feature_importance_df) ranking the features by their importance and 
      displays a bar chart showing the feature importances.
+     df: dataset provided by user
+     target: target variable that the model is predicting.
+     feature_columns: input/feature variables that predict the model.
+     returns dataframe containing the feature importance values.
     '''
     df_copy = df.copy()
     X = df_copy[feature_columns]
@@ -70,10 +74,11 @@ def find_best_random_forest_model(X_train, y_train):
 
 
 def get_rf_predictions(model, X_test):
-    '''Gets the predictions of a random forest 
+    '''Gets the predictions of a specified random forest 
     model for the test set.
     model: random forest model.
     X_test: dataframe of inputs of the test set.
+    returns random forest model predictions
     '''
     predictions = model.predict(X_test)
     return predictions
@@ -81,6 +86,8 @@ def get_rf_predictions(model, X_test):
 def plot_predictions(y_pred, y_original):
     """
     Plots predictions vs actual values for a random forest model.
+    y_pred: dataframe of predictions.
+    y_original: dataframe of original values.
     """
     # Plot predictions vs actual
     plt.figure(figsize=(12, 6))
@@ -95,7 +102,7 @@ def plot_predictions(y_pred, y_original):
     plt.xlabel('Actual Temperature (F)')
     plt.ylabel('Predicted Temperature (F)')
 
-    # # Prediction errors histogram
+    # Prediction errors histogram
     errors = y_pred - y_original
     plt.subplot(1, 2, 2)
     plt.hist(errors, bins=30, edgecolor='black')

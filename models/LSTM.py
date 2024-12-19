@@ -14,13 +14,13 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
     Prepares time series data for training and testing an LSTM model.
 
     This function processes the input data by standardizing the features and target values
-    and then segmenting them into overlapping sequences (windows) of a fixed length. 
-    This is typically required for models like LSTMs, which operate on sequential data.
-
-    The resulting data is scaled using `StandardScaler` to ensure that each feature 
-    has a mean of 0 and a standard deviation of 1. Windowing creates sequences of 
-    fixed size (`window_size`) from the scaled data, where each sequence corresponds 
-    to a fixed number of time steps.
+    and then using the sliding window technique. 
+    X_train: dataframe for training set of X variables
+    y_train: dataframe for train set of y variables
+    X_test: dataframe for test set of X variables
+    y_test: dataframe for test set of y variables
+    window_size: size of the windows
+    returns prepared dataframe
     """
     feature_scaler = StandardScaler()
     X_np_train = X_train.values
@@ -63,6 +63,11 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
 def train_LSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, verbose=2, learning_rate=0.001):
     """
     Trains an LSTM model for time series forecasting.
+    
+    This function creates and trains a LSTM model using the provided
+    training data. It includes multiple LSTM and Dense layers, with dropout for
+    regularization. Early stopping and model checkpointing are used for training
+    optimization.
     """
     model = Sequential()
     #===== Add LSTM layers
@@ -77,8 +82,6 @@ def train_LSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, ver
     model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.2))
     model.add(Dense(1))
-
-
     #==== Compiling the model
     model.compile(optimizer='adam', loss='mean_squared_error')
     #====== Fit Model
@@ -99,9 +102,8 @@ def train_BiLSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, v
     Trains a Bidirectional LSTM model for time series forecasting.
 
     This function creates and trains a Bidirectional LSTM model using the provided
-    training data. It includes multiple LSTM and Dense layers, with dropout for
-    regularization. The model is compiled with mean squared error loss and accuracy
-    as a metric. Early stopping and model checkpointing are used for training
+    training data. It includes multiple Bidirectional LSTM and Dense layers, with dropout for
+    regularization. Early stopping and model checkpointing are used for training
     optimization.
     """
 

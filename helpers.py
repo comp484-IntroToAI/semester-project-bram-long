@@ -5,7 +5,6 @@ from statsmodels.tsa.stattools import adfuller
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
 
-
 def create_train_test(X, y, split):
     '''Creates training and test sets for performance analyis.
     X: inputs of the model
@@ -15,8 +14,6 @@ def create_train_test(X, y, split):
     y_train, y_test = train_test_split(y, train_size= split, random_state=42)
     return X_train, y_train, X_test, y_test 
 
-
-# ToDO finish this
 def calculate_metrics(y_test, y_pred): 
     '''Calculates the performance metrics for a prediction and prints them.
         y_test: actual values
