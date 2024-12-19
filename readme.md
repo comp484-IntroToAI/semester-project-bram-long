@@ -9,7 +9,7 @@ This project leverages Artificial Intelligence and Machine Learning techniques t
 - Provides insights for weather-based trading strategies.
 
 ## Methods
-We employ three robust models:
+We employ three models:
 1. **Random Forest** - A ensemble-based method that averages decision tree predictions and captures non-linearity.
 2. **LSTM (Long Short-Term Memory)** - A type of recurrent neural network which captures short-term and long-term patterns in time-series data.
 3. **BiLSTM** - A type of LSTM that reads through the data forwards and backwards enabling it to more comprehensively understand the data.
@@ -21,7 +21,7 @@ We employ three robust models:
 
 
 ## Results
-We then utilize an ensemble approach with all three models to combine our predictions with the OpenMeteo forecast and find improved forecasting results. We find that the random forest and LSTM trained on all four predictions outperforms the Open Meteo forecast. These results hold when altering the train-test size showing robust results.
+We utilize an ensemble approach -predicting off our models and OpenMeteo's forecasts- and find improved forecasting results. We find that the ensemble LSTM and random forest trained on all four predictions outperforms the Open Meteo forecast. These results hold when altering the train-test size showing robust results.
 
 ## Sources
-- Data Bank: Open Meteo API, Nation Weather Service
+- Data Sources: Open Meteo API, Nation Weather Service
