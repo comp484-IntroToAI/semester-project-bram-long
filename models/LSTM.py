@@ -10,6 +10,18 @@ from tensorflow.keras.layers import Dense,Dropout, Embedding, LSTM, Bidirectiona
 import helpers as hp
 
 def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
+    """
+    Prepares time series data for training and testing an LSTM model.
+
+    This function processes the input data by standardizing the features and target values
+    and then segmenting them into overlapping sequences (windows) of a fixed length. 
+    This is typically required for models like LSTMs, which operate on sequential data.
+
+    The resulting data is scaled using `StandardScaler` to ensure that each feature 
+    has a mean of 0 and a standard deviation of 1. Windowing creates sequences of 
+    fixed size (`window_size`) from the scaled data, where each sequence corresponds 
+    to a fixed number of time steps.
+    """
     feature_scaler = StandardScaler()
     X_np_train = X_train.values
     X_scaled_train = feature_scaler.fit_transform(X_np_train)
@@ -49,6 +61,9 @@ def prepare_data(X_train, y_train, X_test, y_test, window_size=12):
 
 
 def train_LSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, verbose=2, learning_rate=0.001):
+    """
+    Trains an LSTM model for time series forecasting.
+    """
     model = Sequential()
     #===== Add LSTM layers
     model.add(LSTM(units = units, return_sequences=True,activation='relu',
@@ -80,6 +95,16 @@ def train_LSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, ver
 
 
 def train_BiLSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, verbose=2, learning_rate=0.001):
+    """
+    Trains a Bidirectional LSTM model for time series forecasting.
+
+    This function creates and trains a Bidirectional LSTM model using the provided
+    training data. It includes multiple LSTM and Dense layers, with dropout for
+    regularization. The model is compiled with mean squared error loss and accuracy
+    as a metric. Early stopping and model checkpointing are used for training
+    optimization.
+    """
+
     model = Sequential()
     model.add(Bidirectional(LSTM(30, return_sequences=True, activation='tanh',
                                     input_shape=(X_train.shape[1], X_train.shape[2]))))
@@ -113,6 +138,12 @@ def train_BiLSTM(X_train, y_train, units, batch_size, epochs, checkpoint_path, v
     return(history,modelN,model)
 
 def plot_loss(history, name):
+    """
+    This function takes a history object returned by the fit method of a 
+    tf.keras.Model and a name string. It plots the training and validation loss
+    curves of the model. The curves are labeled and the plot is given a title
+    based on the name string. The plot is then shown.
+    """
     plt.plot(history.history['loss'], label='Training Loss')
     plt.plot(history.history['val_loss'], label='Validation Loss')
     plt.legend()
@@ -121,12 +152,30 @@ def plot_loss(history, name):
 
 
 def get_predictions(model, X_test_windowed):
+    """
+    This function takes a trained model and a set of test inputs and returns the model's predictions on those inputs.
+    
+    Parameters:
+    model (tf.keras.Model): The trained model whose predictions we want to get.
+    X_test_windowed (array): The test inputs, already windowed.
+    
+    Returns:
+    y_pred (array): The model's predictions on X_test_windowed.
+    """
     y_pred = model.predict(X_test_windowed)
     return y_pred
 
 def plot_predictions(model_name, X_test_windowed, y_test_windowed, y_pred, target_scaler):
 
+    """
+    This function takes a trained model, the model name, the windowed test inputs, 
+    the windowed test outputs, and the target scaler as parameters and plots 
+    the model's predictions on the test set against the actual values. The 
+    predictions and actual values are inverse transformed back to their original
+    scale. The function also plots a histogram of the prediction errors.
+    """
     # Inverse transform predictions and actual values
+
     y_pred_original = target_scaler.inverse_transform(y_pred)
     y_test_original = target_scaler.inverse_transform(y_test_windowed)
 

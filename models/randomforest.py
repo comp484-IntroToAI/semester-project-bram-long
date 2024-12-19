@@ -6,9 +6,12 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 import helpers as hp
 
-# TODO
+
 def find_important_features(df, feature_columns, target):
     '''
+     Identify the most important features in a dataset (df) for predicting a target variable (target). 
+     Returns a dataframe (feature_importance_df) ranking the features by their importance and 
+     displays a bar chart showing the feature importances.
     '''
     df_copy = df.copy()
     X = df_copy[feature_columns]
@@ -42,6 +45,7 @@ def find_best_random_forest_model(X_train, y_train):
      a grid search algorithm.
     X_train: dataframe of the input values for the train set. 
     y_train: dataframe of the target value for the train set.
+    returns the model with the best cross-validation score
      '''
 
     model = RandomForestRegressor(random_state=42)
@@ -75,6 +79,9 @@ def get_rf_predictions(model, X_test):
     return predictions
 
 def plot_predictions(y_pred, y_original):
+    """
+    Plots predictions vs actual values for a random forest model.
+    """
     # Plot predictions vs actual
     plt.figure(figsize=(12, 6))
 
