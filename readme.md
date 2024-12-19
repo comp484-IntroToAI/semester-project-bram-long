@@ -15,6 +15,9 @@ We employ three robust models:
 3. **BiLSTM** - A type of LSTM that reads through the data forwards and backwards enabling it to more comprehensively understand the data.
 
 ## Installation
+- Install Python 3.9
+- Install Anaconda
+- 
 
 
 ## Results
