@@ -17,7 +17,7 @@ We employ three robust models:
 ## Installation
 - Install Python 3.9
 - Install Anaconda
-- 
+- Ensure all the required packages listed in the `requirements.txt` are installed by using `conda install `
 
 
 ## Results
