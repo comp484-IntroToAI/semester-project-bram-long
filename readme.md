@@ -1,5 +1,5 @@
 # Weather Temperature Prediction
-
+### By Bram Nutt and Long Truong
 ## Project Overview
 This project leverages Artificial Intelligence and Machine Learning techniques to predict the maximum weather temperature for a given day in Miami, Florida. The goal is to aid in weather forecasting which has positive impacts on human livelihood, the economy, and businesses.
 
